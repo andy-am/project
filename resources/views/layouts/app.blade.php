@@ -72,6 +72,9 @@
                                     <a href="{{ url('user/'.Auth()->user()->id.'/roles') }}">
                                         My roles
                                     </a>
+                                    <a href="{{ url('user/'.Auth()->user()->id.'/permissions') }}">
+                                        My Permissions
+                                    </a>
                                 </li>
                             </ul>
                         </li>

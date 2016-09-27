@@ -23,6 +23,7 @@ Route::get('user/profile', function () {
 })->name('profile');
 
 Route::get('user/{id}/roles','UserController@showRoles');
+Route::get('user/{id}/permissions','UserController@showPermissions');
 
 Route::get('roles/create','RoleController@store');
 

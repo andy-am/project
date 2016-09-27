@@ -48,10 +48,15 @@ class UserController extends Controller
 
     public function showRoles($id)
     {
+        dd(User::find($id)->isSuperAdmin());
         $user = User::find($id);
-        return view('user.roles', ['user' => $user] );
+        return view('user.roles', ['user' => $user]);
     }
 
+    public function showPermissions($id)
+    {
+        dd(User::find($id)->role->permissions);
+    }
 
     /**
      * Display the specified resource.

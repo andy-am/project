@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'first_name','last_name', 'nickname', 'email', 'password',
+        'first_name','last_name', 'nickname', 'role_id', 'email', 'password',
     ];
 
     /**
@@ -34,53 +34,36 @@ class User extends Authenticatable
         //return $this->belongsToMany('App\Project','project_user','user_id');
     }
 
-    public function roles(){
-        return $this->belongsToMany('App\Role');
-    }
-    public function permissions(){
-        return $this->belongsToMany('App\Permission');
+    public function role(){
+        return $this->belongsTo('App\Role');
     }
 
-    public function isEmployee()
-    {
-        return ($this->roles()->count()) ? true : false ;
-    }
+    public function isAdmin(){
 
-    public function hasRole($role)
-    {
-        return in_array($this->roles->pluck("name"), $role) ;
-    }
-
-    public function getPermissionIdInArray($array, $term)
-    {
-        foreach($array as $key => $value) {
-            if($value = $term){
-                return $key;
-            }
+        if ($this->role->name == 'admin') {
+            return true;
         }
-        throw new UnexpectedValueException;
+
+        return false;
     }
 
-    public function getPermissions($role)
-    {
-        $assigned_permissions = [];
+    public function isSuperAdmin(){
 
-        $permissions = Peromision::all()->pluck("name","id");
-
-        switch ($role) {
-            case 'super_admin':
-                $assigned_permissions[] = $this->getPermissionIdInArray($permissions,'create');
-                $assigned_permissions[] = $this->getPermissionIdInArray($permissions,'update');
-                $assigned_permissions[] = $this->getPermissionIdInArray($permissions,'delete');
-            case 'admin':
-            case 'operator':
-                $assigned_permissions[] = $this->getPermissionIdInArray($permissions,'ban');
-            case 'moderator':
-                $assigned_permissions[] = $this->getPermissionIdInArray($permissions,'attention');
-                break;
-            default:
-                $assigned_permissions[] = $this->getPermissionIdInArray($permissions,'read');
+        if ($this->role->name == 'super_admin') {
+            return true;
         }
-        $this->permissions()->sync($assigned_permissions);
+        return false;
+    }
+
+    public function hasRole($roleName)
+    {
+        if ($this->role->name == $roleName) {
+            return true;
+        }
+        return false;
+    }
+
+    public function options(){
+        return $this->hasOne('App\Option');
     }
 }
