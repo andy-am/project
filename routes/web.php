@@ -10,7 +10,20 @@
 | to using a Closure or controller method. Build something great!
 |
 */
-
+Auth::routes();
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
+
+Route::get('user/{id}/projects','UserController@showProjects');
+
+Route::get('user/profile', function () {
+    //
+})->name('profile');
+
+Route::get('roles/create','RoleController@create');
+Route::post('roles/create','RoleController@store');
+
+Route::get('user/profile', 'UserController@showProfile')->name('profile');
+
+
