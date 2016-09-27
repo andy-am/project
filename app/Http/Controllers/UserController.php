@@ -46,6 +46,12 @@ class UserController extends Controller
         return view('user.projects', ['user' => $user] );
     }
 
+    public function showRoles($id)
+    {
+        $user = User::find($id);
+        return view('user.roles', ['user' => $user] );
+    }
+
 
     /**
      * Display the specified resource.

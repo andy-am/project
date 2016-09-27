@@ -68,6 +68,11 @@
                                         {{ csrf_field() }}
                                     </form>
                                 </li>
+                                <li>
+                                    <a href="{{ url('user/'.Auth()->user()->id.'/roles') }}">
+                                        My roles
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                     @endif

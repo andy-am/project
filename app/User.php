@@ -37,6 +37,9 @@ class User extends Authenticatable
     public function roles(){
         return $this->belongsToMany('App\Role');
     }
+    public function permissions(){
+        return $this->belongsToMany('App\Permission');
+    }
 
     public function isEmployee()
     {
@@ -48,7 +51,7 @@ class User extends Authenticatable
         return in_array($this->roles->pluck("name"), $role) ;
     }
 
-    public function getRoleIdInArray($array, $term)
+    public function getPermissionIdInArray($array, $term)
     {
         foreach($array as $key => $value) {
             if($value = $term){
@@ -58,25 +61,26 @@ class User extends Authenticatable
         throw new UnexpectedValueException;
     }
 
-    public function makeEmployee($title)
+    public function getPermissions($role)
     {
-        $assigned_roles = [];
-        $roles = Role::all()->pluck("name","id");
+        $assigned_permissions = [];
 
-        switch ($title) {
+        $permissions = Peromision::all()->pluck("name","id");
+
+        switch ($role) {
             case 'super_admin':
-                $assigned_roles[] = $this->getRoleIdInArray($roles,'create');
-                $assigned_roles[] = $this->getRoleIdInArray($roles,'update');
+                $assigned_permissions[] = $this->getPermissionIdInArray($permissions,'create');
+                $assigned_permissions[] = $this->getPermissionIdInArray($permissions,'update');
+                $assigned_permissions[] = $this->getPermissionIdInArray($permissions,'delete');
             case 'admin':
-                $assigned_roles[] = $this->getRoleIdInArray($roles,'delete');
-                $assigned_roles[] = $this->getRoleIdInArray($roles,'ban');
+            case 'operator':
+                $assigned_permissions[] = $this->getPermissionIdInArray($permissions,'ban');
             case 'moderator':
-                $assigned_roles[] = $this->getRoleIdInArray($roles,'kickass');
-                $assigned_roles[] = $this->getRoleIdInArray($roles,'lemons');
+                $assigned_permissions[] = $this->getPermissionIdInArray($permissions,'attention');
                 break;
             default:
-                throw new \Exception("The employee status entered does not exist");
+                $assigned_permissions[] = $this->getPermissionIdInArray($permissions,'read');
         }
-        $this->roles()->sync($assigned_roles);
+        $this->permissions()->sync($assigned_permissions);
     }
 }
